@@ -46,7 +46,7 @@ def get_prices_by_product(h=headers, product='google'):
     params = (
         ('product', product),
     )
-    return requests.get('https://5sim.biz/v1/guest/prices', headers=h, params=params).json()
+    return requests.get('https://5sim.biz/v1/guest/prices', headers=h, params=params).json()[product]
 
 
 def get_prices_by_country_and_product(h=headers, country='russia', product='google'):
@@ -71,24 +71,24 @@ def buy_reuse_number(h=headers, product='amazon', number='79006665544'):
     return requests.get('https://5sim.biz/v1/user/reuse/' + product + '/' + number, headers=h).json()
 
 
-def check_order(h=headers, _id=1):
-    return requests.get('https://5sim.biz/v1/user/check/' + _id, headers=h).json()
+def check_order(h=headers, id='1'):
+    return requests.get('https://5sim.biz/v1/user/check/' + id, headers=h).json()
 
 
-def finish_order(h=headers, _id=1):
-    return requests.get('https://5sim.biz/v1/user/finish/' + _id, headers=h).json()
+def finish_order(h=headers, id='1'):
+    return requests.get('https://5sim.biz/v1/user/finish/' + id, headers=h).json()
 
 
-def cancel_order(h=headers, _id=1):
-    return requests.get('https://5sim.biz/v1/user/cancel/' + _id, headers=h).json()
+def cancel_order(h=headers, id='1'):
+    return requests.get('https://5sim.biz/v1/user/cancel/' + id, headers=h).json()
 
 
-def ban_order(h=headers, _id=1):
-    return requests.get('https://5sim.biz/v1/user/ban/' + _id, headers=h).json()
+def ban_order(h=headers, id='1'):
+    return requests.get('https://5sim.biz/v1/user/ban/' + id, headers=h).json()
 
 
-def sms_list_order(h=headers, _id=1):
-    return requests.get('https://5sim.biz/v1/user/sms/inbox/' + _id, headers=h).json()
+def sms_list_order(h=headers, id='1'):
+    return requests.get('https://5sim.biz/v1/user/sms/inbox/' + id, headers=h).json()
 
 
 def get_notification(h=headers, lang='en'):
@@ -97,6 +97,20 @@ def get_notification(h=headers, lang='en'):
 
 def get_county_list(h=headers):
     return requests.get('https://5sim.biz/v1/guest/countries', headers=h).json()
+
+
+def get_number():
+    req = get_prices_by_product()
+    m = 100
+    country = ''
+    operator = ''
+    # for i in req:
+    for j in req['indonesia']:
+        if m > req['indonesia'][j]['cost']:
+            m = req['indonesia'][j]['cost']
+            country = 'indonesia'
+            operator = j
+    return buy_activation_number(country=country, operator=operator, product='google')
 
 
 if __name__ == 'main':
